@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Mousetrap</string>
+    <string name="app_name">MouseTrap</string>
+    <string name="welcome_message">Welcome To MouseTrap</string>
+
+    <string name="auth0_client_id">nxXq9GaUdUnaWEF0YhwBoaAmBy5ABRmj</string>
+    <string name="auth0_domain">mousetrap.eu.auth0.com</string>
 </resources>
