@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mousetrap">
+    package="pt.up.fc.dcc.mousetrap">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
         <activity
-            android:name="com.mousetrap.StartActivity"
+            android:name="pt.up.fc.dcc.mousetrap.StartActivity"
             android:noHistory="true">
 
             <intent-filter>
@@ -24,10 +24,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.mousetrap.LoginActivity" />
-        <activity android:name="com.mousetrap.Main" />
-        <activity android:name="com.mousetrap.Traps" />
-        <activity android:name="com.mousetrap.Trap" />
+        <activity android:name="pt.up.fc.dcc.mousetrap.LoginActivity" />
+        <activity android:name="pt.up.fc.dcc.mousetrap.Main" />
+        <activity android:name="pt.up.fc.dcc.mousetrap.Traps" />
+        <activity android:name="pt.up.fc.dcc.mousetrap.Trap" />
 
         <!-- Auth0 Lock -->
         <activity
@@ -44,7 +44,7 @@
 
                 <data
                     android:host="@string/auth0_domain"
-                    android:pathPrefix="/android/com.mousetrap/callback"
+                    android:pathPrefix="/android/pt.up.fc.dcc.mousetrap/callback"
                     android:scheme="https" />
             </intent-filter>
         </activity>

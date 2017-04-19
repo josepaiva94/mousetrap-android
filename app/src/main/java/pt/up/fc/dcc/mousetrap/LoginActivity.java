@@ -1,4 +1,4 @@
-package com.mousetrap;
+package pt.up.fc.dcc.mousetrap;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -36,7 +36,7 @@ public class LoginActivity extends Activity {
     private final LockCallback mCallback = new AuthenticationCallback() {
         @Override
         public void onAuthentication(Credentials credentials) {
-            Toast.makeText(getApplicationContext(), "Log In - Success" + credentials, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Log In - Success", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), Main.class));
             finish();
         }

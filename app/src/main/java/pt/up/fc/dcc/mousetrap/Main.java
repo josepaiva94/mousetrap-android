@@ -1,4 +1,4 @@
-package com.mousetrap;
+package pt.up.fc.dcc.mousetrap;
 
 import android.app.Activity;
 import android.content.Intent;
