@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Trap extends Activity {
+public class TrapActivity extends Activity {
 
     TextView trap_name;
     ImageView trap_status_color;

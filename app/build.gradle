@@ -33,6 +33,10 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.auth0.android:lock:2.3.0'
-    compile 'com.auth0.android:auth0:1.0.0'
+    compile 'com.auth0.android:auth0:1.5.0'
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     testCompile 'junit:junit:4.12'
 }

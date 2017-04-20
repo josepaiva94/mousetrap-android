@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class Traps extends Activity {
+public class TrapsActivity extends Activity {
 
 
     LinearLayout trap1;
@@ -66,8 +66,8 @@ public class Traps extends Activity {
 
 
     void go_trap (int i) {
-        Intent intent = new Intent(this,Trap.class);
-        intent.putExtra("trap", "Trap "+i);
+        Intent intent = new Intent(this,TrapActivity.class);
+        intent.putExtra("trap", "TrapActivity "+i);
         startActivity(intent);
     }
 

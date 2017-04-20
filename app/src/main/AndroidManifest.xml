@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name="pt.up.fc.dcc.mousetrap.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,20 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity
-            android:name="pt.up.fc.dcc.mousetrap.StartActivity"
-            android:noHistory="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="pt.up.fc.dcc.mousetrap.LoginActivity" />
-        <activity android:name="pt.up.fc.dcc.mousetrap.Main" />
-        <activity android:name="pt.up.fc.dcc.mousetrap.Traps" />
-        <activity android:name="pt.up.fc.dcc.mousetrap.Trap" />
 
         <!-- Auth0 Lock -->
         <activity
@@ -48,12 +35,25 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.auth0.android.provider.WebAuthActivity"
             android:theme="@style/LoginLockTheme" />
         <!-- Auth0 Lock End -->
 
+        <activity
+            android:name=".StartActivity"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".TrapsActivity" />
+        <activity android:name=".TrapActivity" />
+        <activity android:name=".MultiTrapsActivity" />
     </application>
 
 </manifest>
