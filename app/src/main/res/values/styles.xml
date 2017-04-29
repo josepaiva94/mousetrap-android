@@ -6,12 +6,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorPrimaryDark</item>
     </style>
 
     <style name="LoginLockTheme" parent="Lock.Theme">
         <item name="Auth0.HeaderLogo">@drawable/logo</item>
         <item name="Auth0.HeaderTitle">@string/app_name</item>
-        <item name="Auth0.HeaderTitleColor">@color/colorAccent</item>
+        <item name="Auth0.HeaderTitleColor">@color/colorWhite</item>
         <item name="Auth0.HeaderBackground">@color/colorPrimaryDark</item>
         <item name="Auth0.PrimaryColor">@color/colorPrimary</item>
         <item name="Auth0.DarkPrimaryColor">@color/colorPrimaryDark</item>

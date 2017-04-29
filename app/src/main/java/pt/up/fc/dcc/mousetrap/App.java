@@ -3,6 +3,10 @@ package pt.up.fc.dcc.mousetrap;
 import android.app.Application;
 import android.content.Context;
 
+import pt.up.fc.dcc.mousetrap.mqtt.AlertListener;
+import pt.up.fc.dcc.mousetrap.mqtt.MqttClient;
+import pt.up.fc.dcc.mousetrap.utils.Alerts;
+
 /**
  * Application class
  */

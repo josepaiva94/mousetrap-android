@@ -2,10 +2,7 @@ package pt.up.fc.dcc.mousetrap;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.lock.AuthenticationCallback;
@@ -13,9 +10,12 @@ import com.auth0.android.lock.Lock;
 import com.auth0.android.lock.LockCallback;
 import com.auth0.android.lock.utils.LockException;
 import com.auth0.android.result.Credentials;
+import com.auth0.android.result.UserProfile;
 
 import java.util.Arrays;
 
+import pt.up.fc.dcc.mousetrap.mqtt.MqttClient;
+import pt.up.fc.dcc.mousetrap.utils.Alerts;
 import pt.up.fc.dcc.mousetrap.utils.Auth;
 
 public class LoginActivity extends Activity {
@@ -24,10 +24,11 @@ public class LoginActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Auth0 auth0 = new Auth0(getString(R.string.auth0_client_id), getString(R.string.auth0_domain));
+        Auth0 auth0 = new Auth0(getString(R.string.com_auth0_client_id), getString(R.string.com_auth0_domain));
         mLock = Lock.newBuilder(auth0, mCallback)
                 .withScope(Constants.AUTH_SCOPE)
-                .allowedConnections(Arrays.asList(Constants.AUTH_CONNECTION))
+                .allowedConnections(Arrays.asList(Constants.AUTH_CONNECTION,
+                        Constants.GOOGLE_AUTH_CONNECTION))
                 //Add parameters to the builder
                 .build(this);
         startActivity(mLock.newIntent(this));
@@ -48,20 +49,36 @@ public class LoginActivity extends Activity {
             // store credentials
             Auth.store(credentials);
 
-            // redirect
-            Toast.makeText(getApplicationContext(), "Log In - Success", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
+            // update user profile
+            Auth.getInstance().grabUserProfileFromAuth0(new Runnable() {
+                @Override
+                public void run() {
+
+                    final UserProfile profile = Auth.getInstance().getUserProfile();
+
+                    // redirect
+                    Intent multiTrapsIntent = new Intent(getApplicationContext(), MultiTrapsActivity.class);
+                    multiTrapsIntent.putExtra("traps", Auth.getInstance().getAllRegisteredDevices());
+                    startActivity(multiTrapsIntent);
+
+                    // initialize client & subscribe to registered topics
+                    MqttClient.getInstance().initClient();
+
+                    Alerts.showMessage("Welcome to MouseTrap, " + profile.getName() + "!");
+
+                    finish();
+                }
+            });
         }
 
         @Override
         public void onCanceled() {
-            Toast.makeText(getApplicationContext(), "Log In - Cancelled", Toast.LENGTH_SHORT).show();
+            Alerts.showWarning("Login canceled");
         }
 
         @Override
         public void onError(LockException error) {
-            Toast.makeText(getApplicationContext(), "Log In - Error Occurred", Toast.LENGTH_SHORT).show();
+            Alerts.showError(error.getMessage());
         }
     };
 

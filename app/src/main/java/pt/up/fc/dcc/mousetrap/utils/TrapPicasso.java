@@ -38,7 +38,7 @@ public class TrapPicasso {
             public Response intercept(Chain chain) throws IOException {
                 Request.Builder requestBuilder = chain.request().newBuilder();
                 requestBuilder.addHeader(Constants.AUTHORIZATION_HEADER,
-                        "Bearer " + Auth.getIdToken());
+                        Auth.getTokenType() + " " + Auth.getIdToken());
                 return chain.proceed(requestBuilder.build());
             }
         };

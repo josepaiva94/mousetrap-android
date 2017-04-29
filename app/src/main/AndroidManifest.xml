@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name="pt.up.fc.dcc.mousetrap.App"
@@ -30,7 +31,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/auth0_domain"
+                    android:host="@string/com_auth0_domain"
                     android:pathPrefix="/android/pt.up.fc.dcc.mousetrap/callback"
                     android:scheme="https" />
             </intent-filter>
@@ -54,6 +55,8 @@
         <activity android:name=".TrapsActivity" />
         <activity android:name=".TrapActivity" />
         <activity android:name=".MultiTrapsActivity" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>

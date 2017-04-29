@@ -8,22 +8,28 @@ package pt.up.fc.dcc.mousetrap;
 public final class Constants {
 
     /* Auth0 */
-    public static final String AUTH_SCOPE = "openid profile";
+    public static final String AUTH_SCOPE = "openid profile offline_access";
     public static final String AUTH_CONNECTION = "Traps";
+    public static final String GOOGLE_AUTH_CONNECTION = "google-oauth2";
     public static final String ID_TOKEN_FIELD = "id_token";
     public static final String ACCESS_TOKEN_FIELD = "access_token";
+    public static final String REFRESH_TOKEN_FIELD = "refresh_token";
     public static final String TOKEN_TYPE_FIELD = "token_type";
+    public static final String SCOPE_FIELD = "scope";
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String USER_METADATA_TOPICS_FIELD = "topics";
 
     /* Photo Storage API */
     public static final String PHOTO_STORAGE_API_URL = "http://10.0.2.2:3001/api/";
     public static final String PHOTO_STORAGE_API_PHOTOS_ENDPOINT = PHOTO_STORAGE_API_URL + "photos/%s";
-    public static final String PHOTO_STORAGE_API_DEVICE_PHOTOS_ENDPOINT = PHOTO_STORAGE_API_URL + "device/%s/photos";
+    public static final String PHOTO_STORAGE_API_DEVICE_PHOTOS_ENDPOINT = PHOTO_STORAGE_API_URL + "devices/%s/photos";
 
     /* MQTT Broker */
+    public static final String BROKER_PROTOCOL = "tcp";
     public static final String BROKER_HOSTNAME = "10.0.2.2";
     public static final String BROKER_PORT = "8443";
-    public static final String BROKER_TRAP_PREFIX_TOPIC = "traps/%s/";
+    public static final String BROKER_USERNAME_JWT = "JWT";
+
     public static final String TRAP_PREFIX_TOPIC = "traps/%s/";
     // open/close door
     public static final String TRAP_DOOR_TOPIC = TRAP_PREFIX_TOPIC + "door";
@@ -39,6 +45,13 @@ public final class Constants {
     public static final String TRAP_TIMEOUT_TOPIC = TRAP_PREFIX_TOPIC + "timeout";
     // inform that time for user to take action has changed
     public static final String TRAP_TIMEOUT_ACK_TOPIC = TRAP_PREFIX_TOPIC + "timeout/ack";
+
+    // certificates
+    public static final String DEFAULT_ALIAS = "MouseTrap Cert";
+    public static final String DEFAULT_PASSWORD = "mousetrap";
+
+    /* Globals */
+    public static final String CHARSET = "UTF-8";
 
 
     /**
