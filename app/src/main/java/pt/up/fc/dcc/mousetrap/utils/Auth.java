@@ -190,8 +190,6 @@ public class Auth {
         if (management == null)
             management = new UsersAPIClient(auth0, getIdToken());
 
-        System.out.println("FFFFGGGGG");
-
         management.updateMetadata(userProfile.getId(), userMetadata)
                 .start(new BaseCallback<UserProfile, ManagementException>() {
 
@@ -202,7 +200,6 @@ public class Auth {
 
                     @Override
                     public void run() {
-                        Alerts.showMessage("SUCCESS");
 
                         grabUserProfileFromAuth0(new Runnable() {
                             @Override
@@ -258,7 +255,6 @@ public class Auth {
                     @Override
                     public void onSuccess(Delegation payload) {
 
-                        Alerts.showMessage(payload.getIdToken());
                         store(new Credentials(payload.getIdToken(), getAccessToken(),
                                 getTokenType(), getRefreshToken(), payload.getExpiresIn()));
 
@@ -272,24 +268,5 @@ public class Auth {
                         Alerts.showError(error.getMessage());
                     }
                 });
-        /*authentication.renewAuth(getRefreshToken())
-                .addParameter(Constants.SCOPE_FIELD, Constants.AUTH_SCOPE)
-                .start(new BaseCallback<Credentials, AuthenticationException>() {
-
-            @Override
-            public void onSuccess(Credentials payload) {
-
-                Alerts.showMessage(payload.getIdToken());
-                store(payload);
-
-                if (callback != null)
-                    callback.run();
-            }
-
-            @Override
-            public void onFailure(AuthenticationException error) {
-                Alerts.showError(error.getMessage());
-            }
-        });*/
     }
 }

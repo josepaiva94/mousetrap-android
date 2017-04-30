@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_general_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="picture_request_margin">24dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="content_padding_normal">5dp</dimen>
 </resources>

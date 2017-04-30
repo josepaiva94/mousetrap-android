@@ -40,6 +40,7 @@ dependencies {
     compile 'com.auth0.android:auth0:1.8.0'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
     compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     testCompile 'junit:junit:4.12'

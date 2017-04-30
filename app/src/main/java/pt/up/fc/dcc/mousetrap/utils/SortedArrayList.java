@@ -13,7 +13,8 @@ public class SortedArrayList<T> extends ArrayList<T> {
 
     @Override
     public boolean add(T t) {
-        throw new UnsupportedOperationException("Use insertSorted() instead");
+        insertSorted(t);
+        return true;
     }
 
     @Override

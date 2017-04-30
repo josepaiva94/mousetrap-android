@@ -3,6 +3,7 @@ package pt.up.fc.dcc.mousetrap;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -14,16 +15,21 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 
+import java.util.ArrayList;
+
 import pt.up.fc.dcc.mousetrap.adapter.TrapsListAdapter;
+import pt.up.fc.dcc.mousetrap.models.ModelStore;
 import pt.up.fc.dcc.mousetrap.models.Trap;
 import pt.up.fc.dcc.mousetrap.models.TrapImage;
 import pt.up.fc.dcc.mousetrap.mqtt.MqttClient;
+import pt.up.fc.dcc.mousetrap.mqtt.Topic;
 import pt.up.fc.dcc.mousetrap.utils.Auth;
 import pt.up.fc.dcc.mousetrap.utils.PhotoStorageClient;
 
 public class MultiTrapsActivity extends AppCompatActivity {
 
     private TrapsListAdapter adapter;
+    private ArrayList<Trap> traps = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,29 +47,88 @@ public class MultiTrapsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Trap trap = (Trap) parent.getAdapter().getItem(position);
 
-                Intent trapIntent = new Intent(view.getContext(), TrapActivity.class);
-                trapIntent.putExtra("trapId", trap.getId());
-                startActivity(trapIntent);
+                Intent trapIntent = new Intent(view.getContext(), SingleTrapActivity.class);
+                trapIntent.putExtra("trap", trap);
+                startActivityForResult(trapIntent, 0);
+
             }
         });
 
         // traps list
         Intent intent = getIntent();
-        String[] trapsIds = intent.getStringArrayExtra("traps");
-        for (String trapId : trapsIds) {
-            final Trap trap = new Trap(trapId);
+        if (intent.getStringArrayExtra("traps") != null) {
+            String[] trapsIds = intent.getStringArrayExtra("traps");
+            for (String trapId: trapsIds) {
+                traps.add(ModelStore.getInstance(App.getContext()).retrieve(trapId,
+                        new Trap(trapId)));
+            }
+        }
 
-            PhotoStorageClient.getPhotos(trapId, 10, new PhotoStorageClient.PhotosRunnable() {
+        loadTraps();
+
+        // check if opening from notification
+        if (intent.getBooleanExtra("notification", false)) {
+            Trap trap = (Trap) intent.getSerializableExtra("trap");
+
+            if (intent.getIntExtra("door", -1) != -1)
+                MqttClient.getInstance().publish(Topic.DOOR, trap.getId(), String.valueOf(0));
+
+            Intent trapIntent = new Intent(this, SingleTrapActivity.class);
+            trapIntent.putExtra("trap", trap);
+            startActivityForResult(trapIntent, 0);
+        }
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        // check if opening from notification
+        if (intent.getBooleanExtra("notification", false)) {
+            Trap trap = (Trap) intent.getSerializableExtra("trap");
+
+            if (intent.getIntExtra("door", -1) != -1)
+                MqttClient.getInstance().publish(Topic.DOOR, trap.getId(), String.valueOf(0));
+
+            Intent trapIntent = new Intent(this, SingleTrapActivity.class);
+            trapIntent.putExtra("trap", trap);
+            startActivityForResult(trapIntent, 0);
+        }
+    }
+
+    private void loadTraps() {
+
+        for (final Trap trap : traps) {
+
+            PhotoStorageClient.getPhotos(trap.getId(), 10, new PhotoStorageClient.PhotosRunnable() {
                 @Override
                 public void run() {
-                    for (TrapImage img: getPhotos())
+                    for (TrapImage img : getPhotos())
                         trap.addImage(img);
                 }
             });
 
             adapter.add(trap);
         }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        for (Trap trap : traps)
+            ModelStore.getInstance(App.getContext()).store(trap);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        for (Trap trap : traps)
+            ModelStore.getInstance(App.getContext()).store(trap);
+
+        super.onDestroy();
     }
 
     @Override
@@ -80,12 +145,6 @@ public class MultiTrapsActivity extends AppCompatActivity {
                 // User chose the "Add" action
 
                 popupAddTrap();
-
-                return true;
-
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-
 
                 return true;
 
@@ -139,11 +198,15 @@ public class MultiTrapsActivity extends AppCompatActivity {
         builder.show();
     }
 
-
+    /**
+     * Add trap to adapter
+     * @param trap new trap
+     */
     public void addTrap(final Trap trap){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                traps.add(trap);
                 adapter.add(trap);
                 findViewById(R.id.grid_view).invalidate();
             }

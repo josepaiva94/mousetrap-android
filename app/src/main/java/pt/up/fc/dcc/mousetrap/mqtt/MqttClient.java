@@ -73,8 +73,13 @@ public class MqttClient implements MqttCallbackExtended {
      */
     public void connect() {
 
-        if (mqttAndroidClient != null && mqttAndroidClient.isConnected())
-            mqttAndroidClient.close();
+        try {
+
+            if (mqttAndroidClient != null && mqttAndroidClient.isConnected())
+                mqttAndroidClient.close();
+        } catch (Exception e){
+            // ignore exception
+        }
 
         mqttAndroidClient = new MqttAndroidClient(App.getContext(),
                 Constants.BROKER_PROTOCOL + "://" + Constants.BROKER_HOSTNAME + ":" + Constants.BROKER_PORT,
@@ -209,6 +214,21 @@ public class MqttClient implements MqttCallbackExtended {
     }
 
     /**
+     * Remove listener for door state updates
+     *
+     * @param deviceId id of the device to listen to
+     * @param listener listener to remove
+     */
+    public void removeDoorStateListener(String deviceId, DoorStateListener listener) {
+
+        ArrayList<DoorStateListener> listeners = doorStateListeners.get(deviceId);
+
+        if (listeners == null)
+            return;
+        listeners.remove(listener);
+    }
+
+    /**
      * Add listener for alert messages
      *
      * @param deviceId id of the device to listen to
@@ -223,6 +243,21 @@ public class MqttClient implements MqttCallbackExtended {
         listeners.add(listener);
 
         alertListeners.put(deviceId, listeners);
+    }
+
+    /**
+     * Remove listener for alert messages
+     *
+     * @param deviceId id of the device to listen to
+     * @param listener listener to remove
+     */
+    public void removeAlertListener(String deviceId, AlertListener listener) {
+
+        ArrayList<AlertListener> listeners = alertListeners.get(deviceId);
+
+        if (listeners == null)
+            return;
+        listeners.remove(listener);
     }
 
     /**
@@ -243,6 +278,21 @@ public class MqttClient implements MqttCallbackExtended {
     }
 
     /**
+     * Remove listener for picture messages
+     *
+     * @param deviceId id of the device to listen to
+     * @param listener listener to remove
+     */
+    public void removePictureListener(String deviceId, PictureListener listener) {
+
+        ArrayList<PictureListener> listeners = pictureListeners.get(deviceId);
+
+        if (listeners == null)
+            return;
+        listeners.remove(listener);
+    }
+
+    /**
      * Add listener for timeout ack messages
      *
      * @param deviceId id of the device to listen to
@@ -257,6 +307,21 @@ public class MqttClient implements MqttCallbackExtended {
         listeners.add(listener);
 
         timeoutAckListeners.put(deviceId, listeners);
+    }
+
+    /**
+     * Remove listener for timeout ack messages
+     *
+     * @param deviceId id of the device to listen to
+     * @param listener listener to remove
+     */
+    public void removeTimeoutAckListener(String deviceId, TimeoutAckListener listener) {
+
+        ArrayList<TimeoutAckListener> listeners = timeoutAckListeners.get(deviceId);
+
+        if (listeners == null)
+            return;
+        listeners.remove(listener);
     }
 
     /**

@@ -2,6 +2,9 @@ package pt.up.fc.dcc.mousetrap.models;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+
+import java.io.Serializable;
 import java.util.List;
 
 import pt.up.fc.dcc.mousetrap.utils.SortedArrayList;
@@ -11,7 +14,7 @@ import pt.up.fc.dcc.mousetrap.utils.SortedArrayList;
  *
  * @author José C. Paiva <up201200272@fc.up.pt>
  */
-public class Trap implements Comparable<Trap> {
+public class Trap implements Comparable<Trap>, Serializable, Storable {
 
     private String id;
     private String name;
@@ -19,6 +22,9 @@ public class Trap implements Comparable<Trap> {
     private int timeout;
     private SortedArrayList<TrapImage> images;
     private boolean active;
+
+    public Trap() {
+    }
 
     public Trap(String id) {
         this(id, id, true, 5, new SortedArrayList<TrapImage>(), false);
@@ -91,7 +97,8 @@ public class Trap implements Comparable<Trap> {
      * @param image image to add
      */
     public void addImage(TrapImage image) {
-        images.insertSorted(image);
+        if (!images.contains(image))
+            images.insertSorted(image);
     }
 
     /**
@@ -139,5 +146,16 @@ public class Trap implements Comparable<Trap> {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    @Override
+    public String getStoreId() {
+        return id;
+    }
+
+    @Override
+    public String getJson() {
+
+        return new Gson().toJson(this);
     }
 }

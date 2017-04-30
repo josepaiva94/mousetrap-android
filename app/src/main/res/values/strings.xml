@@ -13,4 +13,10 @@
     <string name="hint_insert_trap">Insert Trap ID</string>
     <string name="action_add">Add</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_single_trap">Trap</string>
+    <string name="trap_label">Trap:</string>
+    <string name="open_close_door">Open/close door</string>
+    <string name="action_open">OPEN</string>
+    <string name="action_close">CLOSE</string>
+    <string name="action_ignore">IGNORE</string>
 </resources>

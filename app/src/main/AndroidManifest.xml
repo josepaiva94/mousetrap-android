@@ -6,9 +6,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="pt.up.fc.dcc.mousetrap.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -50,13 +51,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".TrapsActivity" />
         <activity android:name=".TrapActivity" />
-        <activity android:name=".MultiTrapsActivity" />
+        <activity android:name=".MultiTrapsActivity" android:launchMode="singleTask" />
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <activity
+            android:name=".SingleTrapActivity"
+            android:label="@string/title_activity_single_trap"
+            android:parentActivityName=".MultiTrapsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pt.up.fc.dcc.mousetrap.MultiTrapsActivity" />
+        </activity>
     </application>
 
 </manifest>
