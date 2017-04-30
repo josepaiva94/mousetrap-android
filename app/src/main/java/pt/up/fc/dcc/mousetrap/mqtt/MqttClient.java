@@ -75,8 +75,10 @@ public class MqttClient implements MqttCallbackExtended {
 
         try {
 
-            if (mqttAndroidClient != null && mqttAndroidClient.isConnected())
+            if (mqttAndroidClient != null && mqttAndroidClient.isConnected()) {
+                mqttAndroidClient.unregisterResources();
                 mqttAndroidClient.close();
+            }
         } catch (Exception e){
             // ignore exception
         }
@@ -208,7 +210,9 @@ public class MqttClient implements MqttCallbackExtended {
 
         if (listeners == null)
             listeners = new ArrayList<>();
-        listeners.add(listener);
+
+        if (!listeners.contains(listener))
+            listeners.add(listener);
 
         doorStateListeners.put(deviceId, listeners);
     }
@@ -240,7 +244,9 @@ public class MqttClient implements MqttCallbackExtended {
 
         if (listeners == null)
             listeners = new ArrayList<>();
-        listeners.add(listener);
+
+        if (!listeners.contains(listener))
+            listeners.add(listener);
 
         alertListeners.put(deviceId, listeners);
     }
@@ -272,7 +278,9 @@ public class MqttClient implements MqttCallbackExtended {
 
         if (listeners == null)
             listeners = new ArrayList<>();
-        listeners.add(listener);
+
+        if (!listeners.contains(listener))
+            listeners.add(listener);
 
         pictureListeners.put(deviceId, listeners);
     }
@@ -304,7 +312,9 @@ public class MqttClient implements MqttCallbackExtended {
 
         if (listeners == null)
             listeners = new ArrayList<>();
-        listeners.add(listener);
+
+        if (!listeners.contains(listener))
+            listeners.add(listener);
 
         timeoutAckListeners.put(deviceId, listeners);
     }

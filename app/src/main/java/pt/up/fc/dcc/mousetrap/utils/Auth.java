@@ -221,6 +221,69 @@ public class Auth {
     }
 
     /**
+     * Remove device topics
+     * @param id id of the device
+     * @param callback
+     */
+    public void removeDeviceTopics(String id, final Runnable callback) {
+
+        Map<String, Object> userMetadata = userProfile.getUserMetadata();
+        Object topicsObj = userMetadata.get(Constants.USER_METADATA_TOPICS_FIELD);
+
+        String topicsStr = "";
+        if (topicsObj != null)
+            topicsStr = String.valueOf(topicsObj);
+
+        String removeStr = Topic.DOOR_STATE.toString(id);
+        removeStr += ":" + Topic.PICTURE.toString(id);
+        removeStr += ":" + Topic.ALERT.toString(id);
+        removeStr += ":" + Topic.TIMEOUT_ACK.toString(id);
+        removeStr += ":" + Topic.PICTURE_REQUEST.toString(id);
+        removeStr += ":" + Topic.TIMEOUT.toString(id);
+        removeStr += ":" + Topic.DOOR.toString(id);
+
+        if (topicsStr.startsWith(removeStr))
+            removeStr += ":";
+        else
+            removeStr = ":" + removeStr;
+
+        userMetadata = new HashMap<>(userMetadata);
+        userMetadata.put(Constants.USER_METADATA_TOPICS_FIELD, topicsStr.replace(removeStr, ""));
+
+        if (management == null)
+            management = new UsersAPIClient(auth0, getIdToken());
+
+        management.updateMetadata(userProfile.getId(), userMetadata)
+                .start(new BaseCallback<UserProfile, ManagementException>() {
+
+                    @Override
+                    public void onSuccess(UserProfile payload) {
+
+                        renewIdToken(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                grabUserProfileFromAuth0(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if (callback != null)
+                                            callback.run();
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(ManagementException error) {
+                        Alerts.showError(error.getMessage());
+                    }
+                });
+    }
+
+    /**
      * Grab user profile from Auth0
      * @return user profile
      */

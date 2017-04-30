@@ -3,7 +3,6 @@ package pt.up.fc.dcc.mousetrap;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -125,10 +124,26 @@ public class MultiTrapsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
 
-        for (Trap trap : traps)
+        for (Trap trap : traps) {
             ModelStore.getInstance(App.getContext()).store(trap);
 
+            MqttClient.getInstance().addAlertListener(trap.getId(), adapter);
+            MqttClient.getInstance().addPictureListener(trap.getId(), adapter);
+            MqttClient.getInstance().addDoorStateListener(trap.getId(), adapter);
+            MqttClient.getInstance().addTimeoutAckListener(trap.getId(), adapter);
+        }
+
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == 101) {
+            Trap trap = (Trap) data.getSerializableExtra("trap");
+            removeTrap(trap);
+        }
     }
 
     @Override
@@ -208,6 +223,21 @@ public class MultiTrapsActivity extends AppCompatActivity {
             public void run() {
                 traps.add(trap);
                 adapter.add(trap);
+                findViewById(R.id.grid_view).invalidate();
+            }
+        });
+    }
+
+    /**
+     * Remove trap from adapter
+     * @param trap old trap
+     */
+    public void removeTrap(final Trap trap){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                traps.remove(trap);
+                adapter.remove(trap);
                 findViewById(R.id.grid_view).invalidate();
             }
         });

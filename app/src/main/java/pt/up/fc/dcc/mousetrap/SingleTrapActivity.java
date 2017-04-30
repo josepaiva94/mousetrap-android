@@ -1,14 +1,20 @@
 package pt.up.fc.dcc.mousetrap;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -21,6 +27,7 @@ import pt.up.fc.dcc.mousetrap.mqtt.PictureListener;
 import pt.up.fc.dcc.mousetrap.mqtt.TimeoutAckListener;
 import pt.up.fc.dcc.mousetrap.mqtt.Topic;
 import pt.up.fc.dcc.mousetrap.utils.Alerts;
+import pt.up.fc.dcc.mousetrap.utils.Auth;
 import pt.up.fc.dcc.mousetrap.utils.TrapPicasso;
 
 public class SingleTrapActivity extends AppCompatActivity implements AlertListener,
@@ -93,6 +100,119 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_single_trap, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // Respond to the action bar's Up/Home button
+                finish();
+                return true;
+            case R.id.action_remove:
+                // User chose the "Add" action
+                popupRemoveTrap();
+                return true;
+            case R.id.action_timeout:
+                // User chose the "Add" action
+                popupTimeoutTrap();
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public void finish() {
+        Intent intent = new Intent();
+        intent.putExtra("trap", trap);
+        setResult(101, intent);
+        super.finish();
+    }
+
+    /**
+     * Popup to remove a trap
+     */
+    private void popupRemoveTrap() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Remove " + trap.getName())
+                .setMessage("Do you really want to remove " + trap.getName() + "?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+
+                        Auth.getInstance().removeDeviceTopics(trap.getId(), new Runnable() {
+                            @Override
+                            public void run() {
+                                MqttClient.getInstance().connect();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
+    }
+
+    /**
+     * Popup to set trap timeout
+     */
+    private void popupTimeoutTrap() {
+
+        LayoutInflater inflater = (LayoutInflater)
+                getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View npView = inflater.inflate(R.layout.number_picker_dialog_layout, null);
+
+        String[] values = new String[] {"5", "10", "15", "20", "25", "30"};
+        NumberPicker np = ((NumberPicker) npView);
+        np.setMinValue(0);
+        np.setMaxValue(values.length - 1);
+        np.setDisplayedValues(values);
+        np.setWrapSelectorWheel(true);
+        np.setValue(trap.getTimeout()/5 - 1);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Timeout")
+                .setView(npView)
+                .setPositiveButton(android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+
+                                MqttClient.getInstance().publish(Topic.TIMEOUT, trap.getId(),
+                                        String.valueOf((((NumberPicker) npView).getValue() + 1)*5));
+                            }
+                        })
+                .setNegativeButton(android.R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.cancel();
+                            }
+                        })
+                .show();
+    }
+
+    @Override
     protected void onDestroy() {
 
         MqttClient.getInstance().removeDoorStateListener(trap.getId(), this);
@@ -101,17 +221,6 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
         MqttClient.getInstance().removeTimeoutAckListener(trap.getId(), this);
 
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

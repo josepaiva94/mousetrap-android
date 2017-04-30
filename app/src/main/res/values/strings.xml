@@ -19,4 +19,6 @@
     <string name="action_open">OPEN</string>
     <string name="action_close">CLOSE</string>
     <string name="action_ignore">IGNORE</string>
+    <string name="trap_remove">Remove</string>
+    <string name="action_set_timeout">Set Timeout</string>
 </resources>
