@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,10 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import java.lang.reflect.Field;
 
 import pt.up.fc.dcc.mousetrap.models.Trap;
 import pt.up.fc.dcc.mousetrap.models.TrapImage;
@@ -34,6 +38,7 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
         PictureListener, DoorStateListener, TimeoutAckListener {
 
     private Trap trap;
+    private boolean remove = false;
 
     private TextView single_trap_id;
     private ToggleButton single_trap_door_action;
@@ -60,6 +65,8 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
 
         Intent intent = getIntent();
         trap = (Trap) intent.getSerializableExtra("trap");
+
+        remove = false;
 
         single_trap_id = ((TextView) findViewById(R.id.single_trap_id));
         single_trap_door_action = ((ToggleButton) findViewById(R.id.single_trap_door_action));
@@ -132,6 +139,12 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
 
     @Override
     public void finish() {
+
+        if (!remove) {
+            super.finish();
+            return;
+        }
+
         Intent intent = new Intent();
         intent.putExtra("trap", trap);
         setResult(101, intent);
@@ -159,6 +172,7 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        remove = true;
                                         finish();
                                     }
                                 });
@@ -190,6 +204,7 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
         np.setDisplayedValues(values);
         np.setWrapSelectorWheel(true);
         np.setValue(trap.getTimeout()/5 - 1);
+        setNumberPickerTextColor(np, R.color.colorPrimaryDark);
 
         new AlertDialog.Builder(this)
                 .setTitle("Timeout")
@@ -210,6 +225,28 @@ public class SingleTrapActivity extends AppCompatActivity implements AlertListen
                             }
                         })
                 .show();
+    }
+
+    public boolean setNumberPickerTextColor(NumberPicker numberPicker, int color) {
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText){
+                try{
+                    Field selectorWheelPaintField = numberPicker.getClass()
+                            .getDeclaredField("mSelectorWheelPaint");
+                    selectorWheelPaintField.setAccessible(true);
+                    ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(getResources()
+                            .getColor(color));
+                    ((EditText)child).setTextColor(color);
+                    numberPicker.invalidate();
+                    return true;
+                } catch(Exception e){
+                    // Ignore errors
+                }
+            }
+        }
+        return false;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class PhotoStorageClient {
     private static final DateFormat FORMATTER;
 
     static {
-        FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     }
 
     public static void getPhotos(final String id, int n, final PhotosRunnable cb) {
