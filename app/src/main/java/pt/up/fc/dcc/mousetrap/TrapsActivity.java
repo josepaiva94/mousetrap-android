@@ -1,17 +1,14 @@
-package com.mousetrap;
+package pt.up.fc.dcc.mousetrap;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-public class Traps extends Activity {
+public class TrapsActivity extends Activity {
 
 
     LinearLayout trap1;
@@ -69,8 +66,8 @@ public class Traps extends Activity {
 
 
     void go_trap (int i) {
-        Intent intent = new Intent(this,Trap.class);
-        intent.putExtra("trap", "Trap "+i);
+        Intent intent = new Intent(this,TrapActivity.class);
+        intent.putExtra("trap", "TrapActivity "+i);
         startActivity(intent);
     }
 

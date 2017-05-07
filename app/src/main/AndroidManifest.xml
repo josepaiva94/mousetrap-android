@@ -1,23 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mousetrap">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="pt.up.fc.dcc.mousetrap">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Main">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup">
+
+        <!-- Auth0 Lock -->
+        <activity
+            android:name="com.auth0.android.lock.LockActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/LoginLockTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/com_auth0_domain"
+                    android:pathPrefix="/android/pt.up.fc.dcc.mousetrap/callback"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.auth0.android.provider.WebAuthActivity"
+            android:theme="@style/LoginLockTheme" />
+        <!-- Auth0 Lock End -->
+
+        <activity
+            android:name=".StartActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Traps" />
-        <activity android:name=".Trap" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".TrapsActivity" />
+        <activity android:name=".TrapActivity" />
+        <activity android:name=".MultiTrapsActivity" android:launchMode="singleTask" />
+
+        <activity
+            android:name=".SingleTrapActivity"
+            android:label="@string/title_activity_single_trap"
+            android:parentActivityName=".MultiTrapsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pt.up.fc.dcc.mousetrap.MultiTrapsActivity" />
+        </activity>
     </application>
 
 </manifest>

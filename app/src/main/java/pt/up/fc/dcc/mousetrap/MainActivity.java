@@ -1,4 +1,4 @@
-package com.mousetrap;
+package pt.up.fc.dcc.mousetrap;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Main extends Activity {
+public class MainActivity extends Activity {
 
     ImageView conn_img;
     TextView conn_msg;
@@ -75,7 +75,7 @@ public class Main extends Activity {
     }
 
     void connect_success () {
-        Intent intent = new Intent(this,Traps.class);
+        Intent intent = new Intent(this,MultiTrapsActivity.class);
         startActivity(intent);
     }
 
