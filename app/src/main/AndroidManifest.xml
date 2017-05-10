@@ -55,9 +55,6 @@
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".TrapsActivity" />
-        <activity android:name=".TrapActivity" />
         <activity android:name=".MultiTrapsActivity" android:launchMode="singleTask" />
 
         <activity

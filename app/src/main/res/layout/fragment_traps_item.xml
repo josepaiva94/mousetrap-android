@@ -28,10 +28,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#55000000"
-        android:paddingBottom="15dp"
+        android:background="#25000000"
+        android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="15dp"
+        android:paddingTop="10dp"
         android:textColor="@color/colorWhite" />
 </FrameLayout>
