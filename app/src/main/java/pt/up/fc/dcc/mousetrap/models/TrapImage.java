@@ -57,9 +57,10 @@ public class TrapImage implements Comparable<TrapImage>, Serializable, Storable 
 
     @Override
     public int compareTo(@NonNull TrapImage ti) {
-        if (timestamp > ti.getTimestamp())
+
+        if (timestamp < ti.getTimestamp())
             return -1;
-        else if (timestamp < ti.getTimestamp())
+        else if (timestamp > ti.getTimestamp())
             return 1;
         return 0;
     }
