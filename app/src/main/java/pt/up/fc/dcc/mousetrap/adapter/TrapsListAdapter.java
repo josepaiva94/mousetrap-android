@@ -223,7 +223,7 @@ public class TrapsListAdapter extends ArrayAdapter<Trap> implements AlertListene
                 .setTicker("A mouse entered in " + trap.getName())
                 .setVibrate(new long[] { 100, 250, 100, 500})
                 .setDefaults(Notification.DEFAULT_ALL)
-                .addAction (R.drawable.red,
+                .addAction (R.drawable.ic_lens_red_24dp,
                         App.getContext().getString(R.string.action_close), closeIntent)
                 .build();
 
