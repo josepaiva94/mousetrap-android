@@ -1,5 +1,14 @@
 package pt.up.fc.dcc.mousetrap.mqtt;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.RequiresApi;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -21,6 +30,11 @@ import java.util.regex.Pattern;
 
 import pt.up.fc.dcc.mousetrap.App;
 import pt.up.fc.dcc.mousetrap.Constants;
+import pt.up.fc.dcc.mousetrap.MultiTrapsActivity;
+import pt.up.fc.dcc.mousetrap.R;
+import pt.up.fc.dcc.mousetrap.models.ModelStore;
+import pt.up.fc.dcc.mousetrap.models.Trap;
+import pt.up.fc.dcc.mousetrap.models.TrapImage;
 import pt.up.fc.dcc.mousetrap.utils.Alerts;
 import pt.up.fc.dcc.mousetrap.utils.Auth;
 
@@ -35,6 +49,8 @@ public class MqttClient implements MqttCallbackExtended {
     private static final Pattern TOPIC_DEVICE_PATTERN = Pattern.compile("^traps/([^\\/]+)/");
 
     private static MqttClient client = null;
+
+    private static int notificationId = 1;
 
     private MqttAndroidClient mqttAndroidClient = null;
 
@@ -391,6 +407,10 @@ public class MqttClient implements MqttCallbackExtended {
                     return;
                 }
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    showPushNotification(deviceId, args[0], Integer.parseInt(args[1]));
+                }
+
                 if (alertListeners.get(deviceId) == null) // if nobody cares
                     return;
                 for (AlertListener alertListener : alertListeners.get(deviceId)) {
@@ -413,6 +433,74 @@ public class MqttClient implements MqttCallbackExtended {
 
                 break;
         }
+    }
+
+    /**
+     * Show push notification
+     * @param deviceId the id of the device
+     * @param url image url
+     * @param timeout timeout
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void showPushNotification(String deviceId, String url, int timeout) {
+
+        final Trap trap = ModelStore.getInstance(App.getContext()).retrieve(deviceId,
+                new Trap(deviceId));
+
+        trap.addImage(new TrapImage(url, System.currentTimeMillis()));
+        trap.setTimeout(timeout);
+
+        String[] devices = Auth.getInstance().getAllRegisteredDevices();
+
+        final int fNotificationId = notificationId;
+
+        // Sets up open trap activity
+        Intent trapIntent = new Intent(App.getContext(), MultiTrapsActivity.class);
+        trapIntent.putExtra("traps", devices);
+        trapIntent.putExtra("notification", true);
+        trapIntent.putExtra("trap", trap);
+        trapIntent.putExtra("door", 1);
+        PendingIntent pendingIntent = PendingIntent.getActivity(App.getContext(), fNotificationId,
+                trapIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Sets up the CLOSE action button that will appear in the notification
+        Intent closeDoorIntent = new Intent(App.getContext(), MultiTrapsActivity.class);
+        closeDoorIntent.putExtra("traps", devices);
+        closeDoorIntent.putExtra("notification", true);
+        closeDoorIntent.putExtra("trap", trap);
+        closeDoorIntent.putExtra("door", 0);
+        PendingIntent closeIntent = PendingIntent.getActivity(App.getContext(), fNotificationId,
+                closeDoorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        final NotificationManager notificationManager = (NotificationManager)
+                App.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        final Notification notification = new Notification.Builder(App.getContext())
+                .setContentTitle("Mouse inside")
+                .setContentText("A mouse entered in " + trap.getName())
+                .setSmallIcon(R.drawable.logo)
+                .setContentIntent(pendingIntent)
+                .setWhen(System.currentTimeMillis())
+                .setShowWhen(true)
+                .setAutoCancel(true)
+                .setTicker("A mouse entered in " + trap.getName())
+                .setVibrate(new long[] { 100, 250, 100, 500})
+                .setDefaults(Notification.DEFAULT_ALL)
+                .addAction(R.drawable.ic_lens_red_24dp,
+                        App.getContext().getString(R.string.action_close), closeIntent)
+                .build();
+
+        // Hide the notification after its selected
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(trap.getId(), fNotificationId, notification);
+        notificationId++;
+
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            public void run() {
+                notificationManager.cancel(trap.getId(), fNotificationId);
+            }
+        }, timeout * 1000);
     }
 
     /**
