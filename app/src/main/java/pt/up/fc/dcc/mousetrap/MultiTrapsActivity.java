@@ -69,8 +69,9 @@ public class MultiTrapsActivity extends AppCompatActivity {
         if (intent.getBooleanExtra("notification", false)) {
             Trap trap = (Trap) intent.getSerializableExtra("trap");
 
-            if (intent.getIntExtra("door", 1) == 0)
-                MqttClient.getInstance().publish(Topic.DOOR, trap.getId(), String.valueOf(0));
+            if (intent.getIntExtra("door", -1) != -1)
+                MqttClient.getInstance().publish(Topic.DOOR, trap.getId(),
+                        String.valueOf(intent.getIntExtra("door", -1)));
 
             Intent trapIntent = new Intent(this, SingleTrapActivity.class);
             trapIntent.putExtra("trap", trap);
@@ -87,8 +88,9 @@ public class MultiTrapsActivity extends AppCompatActivity {
         if (intent.getBooleanExtra("notification", false)) {
             Trap trap = (Trap) intent.getSerializableExtra("trap");
 
-            if (intent.getIntExtra("door", 1) == 0)
-                MqttClient.getInstance().publish(Topic.DOOR, trap.getId(), String.valueOf(0));
+            if (intent.getIntExtra("door", -1) != -1)
+                MqttClient.getInstance().publish(Topic.DOOR, trap.getId(),
+                        String.valueOf(intent.getIntExtra("door", -1)));
 
             Intent trapIntent = new Intent(this, SingleTrapActivity.class);
             trapIntent.putExtra("trap", trap);

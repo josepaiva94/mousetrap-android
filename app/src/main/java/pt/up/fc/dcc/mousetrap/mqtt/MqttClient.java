@@ -407,7 +407,7 @@ public class MqttClient implements MqttCallbackExtended {
                     return;
                 }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                     showPushNotification(deviceId, args[0], Integer.parseInt(args[1]));
                 }
 
@@ -441,7 +441,7 @@ public class MqttClient implements MqttCallbackExtended {
      * @param url image url
      * @param timeout timeout
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     private void showPushNotification(String deviceId, String url, int timeout) {
 
         final Trap trap = ModelStore.getInstance(App.getContext()).retrieve(deviceId,
@@ -459,7 +459,7 @@ public class MqttClient implements MqttCallbackExtended {
         trapIntent.putExtra("traps", devices);
         trapIntent.putExtra("notification", true);
         trapIntent.putExtra("trap", trap);
-        trapIntent.putExtra("door", 1);
+        trapIntent.setAction(App.getContext().getString(R.string.action_check));
         PendingIntent pendingIntent = PendingIntent.getActivity(App.getContext(), fNotificationId,
                 trapIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -469,8 +469,19 @@ public class MqttClient implements MqttCallbackExtended {
         closeDoorIntent.putExtra("notification", true);
         closeDoorIntent.putExtra("trap", trap);
         closeDoorIntent.putExtra("door", 0);
+        trapIntent.setAction(App.getContext().getString(R.string.action_close));
         PendingIntent closeIntent = PendingIntent.getActivity(App.getContext(), fNotificationId,
                 closeDoorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Sets up the IGNORE action button that will appear in the notification
+        Intent openDoorIntent = new Intent(App.getContext(), MultiTrapsActivity.class);
+        openDoorIntent.putExtra("traps", devices);
+        openDoorIntent.putExtra("notification", true);
+        openDoorIntent.putExtra("trap", trap);
+        openDoorIntent.putExtra("door", 1);
+        openDoorIntent.setAction(App.getContext().getString(R.string.action_open));
+        PendingIntent ignoreIntent = PendingIntent.getActivity(App.getContext(), fNotificationId,
+                openDoorIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final NotificationManager notificationManager = (NotificationManager)
                 App.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -486,8 +497,12 @@ public class MqttClient implements MqttCallbackExtended {
                 .setTicker("A mouse entered in " + trap.getName())
                 .setVibrate(new long[] { 100, 250, 100, 500})
                 .setDefaults(Notification.DEFAULT_ALL)
-                .addAction(R.drawable.ic_lens_red_24dp,
-                        App.getContext().getString(R.string.action_close), closeIntent)
+                .addAction(new Notification.Action.Builder(R.drawable.ic_lens_red_24dp,
+                        App.getContext().getString(R.string.action_close), closeIntent).build())
+                .addAction(new Notification.Action.Builder(R.drawable.ic_lens_grey_24dp,
+                        App.getContext().getString(R.string.action_check), pendingIntent).build())
+                .addAction(new Notification.Action.Builder(R.drawable.ic_lens_green_24dp,
+                        App.getContext().getString(R.string.action_open), ignoreIntent).build())
                 .build();
 
         // Hide the notification after its selected
