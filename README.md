@@ -15,10 +15,10 @@ Clone the repo or download it.
 Download & Install the apk 
 
 To a central server running at 192.168.10.35 use the following QRcode
-![www.josepaiva.me/public/mousetrap35.apk](www.josepaiva.me/public/mousetrap35.apk)
+![www.josepaiva.me/public/mousetrap35.apk](https://github.com/josepaiva94/mousetrap-android/blob/master/printscreens/mousetrap_qrcode_35.png)
 
 To a central server running at an external machine use the following QRcode
-![www.josepaiva.me/public/mousetrap.apk](www.josepaiva.me/public/mousetrap.apk)
+![www.josepaiva.me/public/mousetrap.apk](https://github.com/josepaiva94/mousetrap-android/blob/master/printscreens/mousetrap.qrcode.png)
 
 ## Issue Reporting
 
