@@ -20,13 +20,13 @@ public final class Constants {
     public static final String USER_METADATA_TOPICS_FIELD = "topics";
 
     /* Photo Storage API */
-    public static final String PHOTO_STORAGE_API_URL = "http://codingbooth.dynip.sapo.pt:3001/api/";
+    public static final String PHOTO_STORAGE_API_URL = "http://192.168.10.35:3001/api/";
     public static final String PHOTO_STORAGE_API_PHOTOS_ENDPOINT = PHOTO_STORAGE_API_URL + "photos/%s";
     public static final String PHOTO_STORAGE_API_DEVICE_PHOTOS_ENDPOINT = PHOTO_STORAGE_API_URL + "devices/%s/photos";
 
     /* MQTT Broker */
     public static final String BROKER_PROTOCOL = "tcp";
-    public static final String BROKER_HOSTNAME = "codingbooth.dynip.sapo.pt";
+    public static final String BROKER_HOSTNAME = "192.168.10.35";
     public static final String BROKER_PORT = "8443";
     public static final String BROKER_USERNAME_JWT = "JWT";
 
