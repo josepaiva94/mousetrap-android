@@ -10,6 +10,10 @@ When the user enters in the application, he has to sign up or login. Once he sig
 
 Clone the repo or download it.
 
+## Requirements
+
+Minimum Android version: *4.4W*
+
 ## Deployment
 
 Download & Install the apk 
