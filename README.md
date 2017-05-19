@@ -28,7 +28,7 @@ If you have found a bug or if you have a feature request, please report them at 
 
 ## Author
 
-[José C. Paiva](#)
+[José C. Paiva](#) &
 [Francisco Sucena](#)
 
 ## License
